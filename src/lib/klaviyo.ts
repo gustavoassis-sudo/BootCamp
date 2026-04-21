@@ -1,5 +1,5 @@
 const BASE_URL = "https://a.klaviyo.com/api";
-const REVISION = "2024-10-15";
+const REVISION = "2026-04-15";
 const CONVERSION_METRIC_ID = "RTf8bb"; // Order Placed — Minimal Club
 
 export type Campaign = {
