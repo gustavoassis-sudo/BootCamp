@@ -1,27 +1,27 @@
-# Pitch — influencer-approval
+# Pitch — email-copy-intelligence
 
-> 2 minutos cronometrados. Preencher ao longo do dia. Versão final até 17h30.
-> **Dica**: muito disso sai DIRETO do `docs/prd.md`.
+> 2 minutos cronometrados. Versão final até 17h30.
 
 ## Problema (20s)
 
-O time de marketing da Moon aprova influenciadores um por um, manualmente, sem critério padronizado. Cada análise leva 5-10 minutos — por influenciador, por campanha, por marca.
+Time de marketing da Minimal Club cria copy de e-mail manualmente, sem referência ao histórico. Cada nova campanha reinventa a roda — não existe ferramenta que cruze subject, preview e body com métricas reais (open rate, conversão, receita).
 
 ## Solução (40s)
 
-Uma plataforma que automatiza essa análise. Você cola os dados do influenciador, seleciona a marca (Minimal Club ou Hoomy), e o Claude avalia o fit em segundos — retornando aprovado, reprovado ou revisar, com justificativa. Tudo salvo e organizado por campanha.
+Plataforma conectada ao Klaviyo que analisa as top 30 campanhas automático, identifica padrões de copy que geram resultado com Claude, e gera novos copies baseados nesses padrões — 3 subjects, 3 previews e 1 body completo. Tudo salvo e reutilizável.
 
 ## Demo (50s)
 
-- **URL Vercel**: <cole aqui quando deployar>
-- Passo 1: Adicionar influenciador via formulário (nome, handle, seguidores, engajamento, nicho)
-- Passo 2: Selecionar marca e campanha
-- Passo 3: Ver análise automática do Claude com decisão e justificativa
-- Passo 4: Navegar pelo histórico de influenciadores aprovados/reprovados
+- **URL Vercel**: https://boot-camp-2x5sjmm4e-gustavos-projects-609e1a24.vercel.app
+- Dashboard: lista de campanhas reais do Klaviyo com open rate, conversão e receita
+- "Analisar": Claude identifica padrões de subject, preview e body que performam melhor
+- "Gerar": 3 opções de subject + 3 de preview + body completo (menos de 30s)
+- Histórico: todos os copies salvos prontos pra usar no Klaviyo
+- Flow Builder: criar sequences de emails automaticamente no Klaviyo
 
 ## Próximos passos (10s)
 
-Integração direta com Instagram para puxar dados automaticamente. Regras de aprovação customizáveis por campanha. Potencial de virar ferramenta interna oficial da Moon para as duas marcas.
+Integração com Instagram/TikTok para análise de público. Regras de aprovação customizáveis. Múltiplas marcas na mesma plataforma (Hoomy, etc).
 
 ---
 
