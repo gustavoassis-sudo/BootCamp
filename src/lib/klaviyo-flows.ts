@@ -61,6 +61,12 @@ export async function createKlaviyoFlow(
       attributes: {
         name: `[ECI] ${brief.name}`,
         status: "draft",
+        definition: {
+          trigger: {
+            type: "manual",
+          },
+          states: [],
+        },
       },
     },
   });
