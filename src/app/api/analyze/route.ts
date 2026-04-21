@@ -9,6 +9,9 @@ export type AnalysisResult = {
   previewPatterns: string[];
   bodyPatterns: string[];
   topInsight: string;
+  performanceInsights: string[];
+  hiddenPatterns: string[];
+  audienceInsights: string[];
 };
 
 export async function POST(req: NextRequest) {
@@ -22,33 +25,64 @@ export async function POST(req: NextRequest) {
     .map(
       (c, i) => `
 Campanha ${i + 1}: ${c.name}
+- Segmento: ${c.audienceSegment || "não identificado"}
 - Subject: ${c.subject || "(sem subject)"}
 - Preview Text: ${c.previewText || "(sem preview)"}
+- Horário de envio: ${c.sendTime ? new Date(c.sendTime).toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" }) : "—"}
 - Open Rate: ${(c.openRate * 100).toFixed(1)}%
+- CTOR (Click-to-Open): ${(c.clickToOpenRate * 100).toFixed(1)}%
 - Click Rate: ${(c.clickRate * 100).toFixed(1)}%
-- Receita por Destinatário: R$ ${c.revenuePerRecipient.toFixed(2)}`
+- Taxa de Conversão: ${(c.conversionRate * 100).toFixed(2)}%
+- Receita Total: R$ ${c.conversionValue.toFixed(2)}
+- Ticket Médio (AOV): R$ ${c.averageOrderValue.toFixed(2)}
+- Receita por Destinatário: R$ ${c.revenuePerRecipient.toFixed(2)}
+- Destinatários: ${c.recipients.toLocaleString("pt-BR")}
+- Taxa de Descadastro: ${(c.unsubscribeRate * 100).toFixed(3)}%
+- Taxa de Spam: ${(c.spamComplaintRate * 100).toFixed(4)}%`
     )
     .join("\n");
 
-  const prompt = `Você é um especialista em email marketing para e-commerce masculino premium. Analise as seguintes campanhas de email da Minimal Club (marca de roupas masculinas D2C brasileira) que tiveram as melhores taxas de abertura:
+  const prompt = `Você é um especialista em email marketing e análise de dados para e-commerce masculino premium. Analise as seguintes campanhas da Minimal Club (marca de roupas masculinas D2C brasileira) com dados quantitativos completos.
 
 ${campaignList}
 
-Identifique os padrões que fazem esses emails performar bem. Responda APENAS com um JSON válido no seguinte formato, sem markdown, sem texto adicional:
+Sua análise deve ir ALÉM do óbvio. Encontre:
+1. Padrões que humanos não percebem facilmente (correlações entre variáveis)
+2. Anomalias reveladoras (ex: open rate alto + conversão zero = problema no corpo do email)
+3. Diferenças de performance por segmento (A+ vs LEADS vs outros)
+4. Padrão de horário que correlaciona com conversão ou CTOR
+5. Qual tipo de subject/preview gera CTOR alto (não apenas abertura)
+
+Dados quantitativos obrigatórios: use números reais das campanhas nos seus insights. Não diga "emails com urgência performam melhor" — diga "emails com urgência no subject tiveram CTOR médio de X% vs Y% dos demais".
+
+Responda APENAS com JSON válido, sem markdown, sem texto adicional:
 
 {
-  "subjectPatterns": ["padrão 1 em subject", "padrão 2 em subject", "padrão 3 em subject"],
-  "previewPatterns": ["padrão 1 em preview", "padrão 2 em preview", "padrão 3 em preview"],
-  "bodyPatterns": ["padrão 1 em corpo/estratégia", "padrão 2", "padrão 3"],
-  "topInsight": "O principal insight sobre o que faz esses emails funcionarem bem para o público da Minimal Club"
-}
-
-Seja específico e acionável. Foque em padrões reais observados, não generalidades.`;
+  "subjectPatterns": ["padrão específico 1 com dados", "padrão 2", "padrão 3"],
+  "previewPatterns": ["padrão específico 1 com dados", "padrão 2", "padrão 3"],
+  "bodyPatterns": ["padrão de estratégia/conteúdo 1", "padrão 2", "padrão 3"],
+  "topInsight": "O insight mais surpreendente ou valioso — deve incluir número(s) real(is)",
+  "performanceInsights": [
+    "dado quantitativo 1 (ex: campanhas com AOV > R$X geraram Y% mais receita total)",
+    "dado quantitativo 2",
+    "dado quantitativo 3"
+  ],
+  "hiddenPatterns": [
+    "correlação não óbvia 1 (ex: emails enviados entre X-Xh tiveram CTOR Y% maior)",
+    "correlação não óbvia 2",
+    "correlação não óbvia 3"
+  ],
+  "audienceInsights": [
+    "diferença entre segmentos 1 (ex: CLIENTES A+ convertem X% vs LEADS Y%)",
+    "padrão de segmento 2",
+    "recomendação baseada em segmento 3"
+  ]
+}`;
 
   try {
     const message = await client.messages.create({
       model: "claude-sonnet-4-6",
-      max_tokens: 1024,
+      max_tokens: 1500,
       messages: [{ role: "user", content: prompt }],
     });
 

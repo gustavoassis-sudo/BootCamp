@@ -24,6 +24,16 @@ export async function POST(req: NextRequest) {
     );
   }
 
+  const hiddenSection =
+    analysis.hiddenPatterns?.length > 0
+      ? `\nPADRÕES OCULTOS IDENTIFICADOS (use esses para diferenciar o copy):\n${analysis.hiddenPatterns.map((p) => `• ${p}`).join("\n")}`
+      : "";
+
+  const performanceSection =
+    analysis.performanceInsights?.length > 0
+      ? `\nDADOS DE PERFORMANCE (calibre o copy com base nesses números):\n${analysis.performanceInsights.map((p) => `• ${p}`).join("\n")}`
+      : "";
+
   const prompt = `Você é um copywriter especialista em email marketing para e-commerce masculino premium brasileiro. Sua missão é criar copies que performam tão bem quanto as melhores campanhas da Minimal Club.
 
 PADRÕES IDENTIFICADOS NAS CAMPANHAS TOP PERFORMERS:
@@ -38,6 +48,8 @@ Padrões no conteúdo/estratégia:
 ${analysis.bodyPatterns.map((p) => `• ${p}`).join("\n")}
 
 Principal insight: ${analysis.topInsight}
+${hiddenSection}
+${performanceSection}
 
 ---
 

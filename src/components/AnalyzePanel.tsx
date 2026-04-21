@@ -61,9 +61,9 @@ export default function AnalyzePanel({
             {campaigns.map((c) => (
               <div
                 key={c.id}
-                className="flex items-center justify-between rounded-lg bg-neutral-800/50 px-4 py-2.5"
+                className="flex items-center justify-between rounded-lg bg-neutral-800/50 px-4 py-2.5 gap-4"
               >
-                <div>
+                <div className="min-w-0">
                   <div className="text-sm font-medium text-neutral-200 line-clamp-1">
                     {c.subject || c.name}
                   </div>
@@ -73,8 +73,12 @@ export default function AnalyzePanel({
                     </div>
                   )}
                 </div>
-                <div className="text-xs text-emerald-400 font-medium shrink-0 ml-4">
-                  {(c.openRate * 100).toFixed(1)}% open
+                <div className="flex items-center gap-3 shrink-0 text-xs font-medium">
+                  <span className="text-emerald-400">{(c.openRate * 100).toFixed(1)}% open</span>
+                  <span className="text-blue-400">{(c.clickToOpenRate * 100).toFixed(1)}% ctor</span>
+                  {c.conversionRate > 0 && (
+                    <span className="text-violet-400">{(c.conversionRate * 100).toFixed(2)}% conv</span>
+                  )}
                 </div>
               </div>
             ))}
@@ -107,13 +111,66 @@ export default function AnalyzePanel({
           {/* Resultado da análise */}
           {analysis && (
             <div className="space-y-5">
+              {/* Top Insight */}
               <div className="rounded-xl border border-violet-800/50 bg-violet-950/20 p-4">
-                <p className="text-sm font-semibold text-violet-300 mb-1">
+                <p className="text-xs font-semibold text-violet-300 uppercase tracking-wide mb-1">
                   Principal Insight
                 </p>
                 <p className="text-neutral-200">{analysis.topInsight}</p>
               </div>
 
+              {/* Performance Insights */}
+              {analysis.performanceInsights?.length > 0 && (
+                <div className="rounded-xl border border-blue-800/50 bg-blue-950/10 p-4">
+                  <p className="text-xs font-semibold text-blue-300 uppercase tracking-wide mb-3">
+                    📊 Dados Quantitativos
+                  </p>
+                  <ul className="space-y-2">
+                    {analysis.performanceInsights.map((item, i) => (
+                      <li key={i} className="flex gap-2 text-sm text-neutral-300">
+                        <span className="text-blue-500 shrink-0">›</span>
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {/* Hidden Patterns */}
+              {analysis.hiddenPatterns?.length > 0 && (
+                <div className="rounded-xl border border-amber-800/50 bg-amber-950/10 p-4">
+                  <p className="text-xs font-semibold text-amber-300 uppercase tracking-wide mb-3">
+                    💡 Padrões Ocultos
+                  </p>
+                  <ul className="space-y-2">
+                    {analysis.hiddenPatterns.map((item, i) => (
+                      <li key={i} className="flex gap-2 text-sm text-neutral-300">
+                        <span className="text-amber-500 shrink-0">›</span>
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {/* Audience Insights */}
+              {analysis.audienceInsights?.length > 0 && (
+                <div className="rounded-xl border border-emerald-800/50 bg-emerald-950/10 p-4">
+                  <p className="text-xs font-semibold text-emerald-300 uppercase tracking-wide mb-3">
+                    👥 Insights por Segmento
+                  </p>
+                  <ul className="space-y-2">
+                    {analysis.audienceInsights.map((item, i) => (
+                      <li key={i} className="flex gap-2 text-sm text-neutral-300">
+                        <span className="text-emerald-500 shrink-0">›</span>
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {/* Padrões de copy */}
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
                 {[
                   { label: "Padrões em Subject", items: analysis.subjectPatterns },

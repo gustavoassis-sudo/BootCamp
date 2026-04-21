@@ -1,4 +1,10 @@
 const BASE_URL = "https://a.klaviyo.com/api";
+
+function extractSegment(name: string): string {
+  const match = name.match(/\[([^\]]+)\]/g);
+  if (!match || match.length < 2) return "";
+  return match[1].replace(/[\[\]]/g, "").trim();
+}
 const REVISION = "2026-04-15";
 const CONVERSION_METRIC_ID = "RTf8bb"; // Order Placed — Minimal Club
 
@@ -9,14 +15,37 @@ export type Campaign = {
   sendTime: string;
   subject: string;
   previewText: string;
+  audienceSegment: string;
+  // métricas básicas
   openRate: number;
   clickRate: number;
   revenuePerRecipient: number;
+  recipients: number;
+  // métricas de engajamento
+  clickToOpenRate: number;
+  // métricas de conversão
+  conversionRate: number;
+  conversionValue: number;
+  averageOrderValue: number;
+  // métricas de saúde
+  unsubscribeRate: number;
+  spamComplaintRate: number;
 };
 
 type MetricsMap = Record<
   string,
-  { openRate: number; clickRate: number; revenuePerRecipient: number }
+  {
+    openRate: number;
+    clickRate: number;
+    revenuePerRecipient: number;
+    recipients: number;
+    clickToOpenRate: number;
+    conversionRate: number;
+    conversionValue: number;
+    averageOrderValue: number;
+    unsubscribeRate: number;
+    spamComplaintRate: number;
+  }
 >;
 
 async function klaviyoFetch(path: string, options?: RequestInit) {
@@ -57,7 +86,18 @@ async function getCampaignMetrics(): Promise<MetricsMap> {
         attributes: {
           timeframe: { key: "last_90_days" },
           conversion_metric_id: CONVERSION_METRIC_ID,
-          statistics: ["open_rate", "click_rate", "revenue_per_recipient"],
+          statistics: [
+            "open_rate",
+            "click_rate",
+            "revenue_per_recipient",
+            "recipients",
+            "click_to_open_rate",
+            "conversion_rate",
+            "conversion_value",
+            "average_order_value",
+            "unsubscribe_rate",
+            "spam_complaint_rate",
+          ],
         },
       },
     }),
@@ -70,6 +110,13 @@ async function getCampaignMetrics(): Promise<MetricsMap> {
       openRate: result.statistics.open_rate ?? 0,
       clickRate: result.statistics.click_rate ?? 0,
       revenuePerRecipient: result.statistics.revenue_per_recipient ?? 0,
+      recipients: result.statistics.recipients ?? 0,
+      clickToOpenRate: result.statistics.click_to_open_rate ?? 0,
+      conversionRate: result.statistics.conversion_rate ?? 0,
+      conversionValue: result.statistics.conversion_value ?? 0,
+      averageOrderValue: result.statistics.average_order_value ?? 0,
+      unsubscribeRate: result.statistics.unsubscribe_rate ?? 0,
+      spamComplaintRate: result.statistics.spam_complaint_rate ?? 0,
     };
   }
   return map;
@@ -138,9 +185,17 @@ export async function getCampaigns(limit = 30): Promise<Campaign[]> {
         sendTime: c.attributes.send_time ?? "",
         subject: content.subject,
         previewText: content.previewText,
+        audienceSegment: extractSegment(c.attributes.name),
         openRate: m.openRate,
         clickRate: m.clickRate,
         revenuePerRecipient: m.revenuePerRecipient,
+        recipients: m.recipients,
+        clickToOpenRate: m.clickToOpenRate,
+        conversionRate: m.conversionRate,
+        conversionValue: m.conversionValue,
+        averageOrderValue: m.averageOrderValue,
+        unsubscribeRate: m.unsubscribeRate,
+        spamComplaintRate: m.spamComplaintRate,
       };
     }
   );
