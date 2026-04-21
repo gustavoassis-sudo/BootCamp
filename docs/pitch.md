@@ -1,34 +1,32 @@
-# Pitch — Plataforma de Aprovação de Influenciadores
+# Pitch — influencer-approval
 
-## Tempo: 2 minutos
+> 2 minutos cronometrados. Preencher ao longo do dia. Versão final até 17h30.
+> **Dica**: muito disso sai DIRETO do `docs/prd.md`.
 
----
+## Problema (20s)
 
-## 1. O problema (20s)
+O time de marketing da Moon aprova influenciadores um por um, manualmente, sem critério padronizado. Cada análise leva 5-10 minutos — por influenciador, por campanha, por marca.
 
-> "Hoje, aprovar um influenciador na Moon é um processo 100% manual. Alguém do time senta, abre perfil por perfil, avalia engajamento, seguidores, fit com a marca — e decide na intuição. É lento, inconsistente e não deixa histórico."
+## Solução (40s)
 
-## 2. A solução (30s)
+Uma plataforma que automatiza essa análise. Você cola os dados do influenciador, seleciona a marca (Minimal Club ou Hoomy), e o Claude avalia o fit em segundos — retornando aprovado, reprovado ou revisar, com justificativa. Tudo salvo e organizado por campanha.
 
-> "Construí uma plataforma que automatiza isso. Você cola os dados do influenciador, seleciona a marca — Minimal Club ou Hoomy — e o Claude analisa o fit em segundos. O resultado: aprovado, reprovado ou revisar, com justificativa. Tudo salvo, organizado por campanha."
+## Demo (50s)
 
-## 3. Demo (50s)
+- **URL Vercel**: <cole aqui quando deployar>
+- Passo 1: Adicionar influenciador via formulário (nome, handle, seguidores, engajamento, nicho)
+- Passo 2: Selecionar marca e campanha
+- Passo 3: Ver análise automática do Claude com decisão e justificativa
+- Passo 4: Navegar pelo histórico de influenciadores aprovados/reprovados
 
-*(roteiro da demo — preencher antes do pitch)*
+## Próximos passos (10s)
 
-- [ ] Abrir dashboard com pipeline
-- [ ] Adicionar influenciador via formulário
-- [ ] Mostrar análise automática do Claude
-- [ ] Mostrar histórico de decisões
-
-## 4. Resultado / próximos passos (20s)
-
-> "Com isso, o time de marketing economiza horas por campanha e padroniza os critérios de seleção. Próximos passos: integração direta com Instagram para puxar dados automaticamente e alertas por WhatsApp."
+Integração direta com Instagram para puxar dados automaticamente. Regras de aprovação customizáveis por campanha. Potencial de virar ferramenta interna oficial da Moon para as duas marcas.
 
 ---
 
-## Métricas para mencionar
+## Métricas do dia (preencher ao final)
 
-- Tempo atual estimado por influenciador: ~5-10 min
-- Com a plataforma: ~30 segundos
-- Histórico centralizado: zero planilhas perdidas
+- Tokens consumidos: <pegue no dashboard Anthropic>
+- Commits: `git log --oneline | wc -l`
+- Tempo total ativo: <estimativa>
