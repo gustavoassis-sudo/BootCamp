@@ -218,13 +218,13 @@ export default function CampaignTable({ campaigns }: { campaigns: Campaign[] }) 
                   </td>
                   <td className="px-4 py-3 hidden lg:table-cell">
                     <MetricBadge
-                      value={c.conversionRate > 0 ? pct(c.conversionRate) : "—"}
+                      value={pct(c.conversionRate)}
                       label="conv%"
                     />
                   </td>
                   <td className="px-4 py-3 hidden lg:table-cell">
                     <MetricBadge
-                      value={c.revenuePerRecipient > 0 ? `R$${c.revenuePerRecipient.toFixed(2)}` : "—"}
+                      value={c.revenuePerRecipient > 0 ? `R$${c.revenuePerRecipient.toFixed(2)}` : "0"}
                       label="rev/rec"
                     />
                   </td>
