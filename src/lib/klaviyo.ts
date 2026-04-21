@@ -75,25 +75,21 @@ async function getCampaignMetrics(): Promise<MetricsMap> {
   return map;
 }
 
-async function getCampaignMessageContents(
-  messageIds: string[]
-): Promise<Record<string, { subject: string; previewText: string }>> {
-  if (messageIds.length === 0) return {};
-
-  // Klaviyo suporta filter=any(id,...) para busca em lote
-  const ids = messageIds.slice(0, 50).join("','"); // max 50 por chamada
-  const data = await klaviyoFetch(
-    `/campaign-messages/?filter=any(id,'${ids}')&fields[campaign-message]=content`
-  );
-
-  const map: Record<string, { subject: string; previewText: string }> = {};
-  for (const msg of data.data ?? []) {
-    map[msg.id] = {
-      subject: msg.attributes.content?.subject ?? "",
-      previewText: msg.attributes.content?.preview_text ?? "",
+async function getCampaignContent(
+  campaignId: string
+): Promise<{ subject: string; previewText: string }> {
+  try {
+    const data = await klaviyoFetch(
+      `/campaigns/${campaignId}/campaign-messages/?fields[campaign-message]=definition`
+    );
+    const content = data.data?.[0]?.attributes?.definition?.content;
+    return {
+      subject: content?.subject ?? "",
+      previewText: content?.preview_text ?? "",
     };
+  } catch {
+    return { subject: "", previewText: "" };
   }
-  return map;
 }
 
 export async function getCampaigns(limit = 30): Promise<Campaign[]> {
@@ -106,35 +102,35 @@ export async function getCampaigns(limit = 30): Promise<Campaign[]> {
 
   const campaigns = campaignsData.data ?? [];
 
-  // Filtra apenas campanhas com métricas disponíveis
-  const withMetrics = campaigns.filter((c: { id: string }) => metrics[c.id]);
+  // Filtra e ordena por open rate para pegar o top N antes de buscar subjects
+  const withMetrics = campaigns
+    .filter((c: { id: string }) => metrics[c.id])
+    .sort(
+      (a: { id: string }, b: { id: string }) =>
+        metrics[b.id].openRate - metrics[a.id].openRate
+    )
+    .slice(0, limit);
 
-  // Coleta IDs de mensagens para busca em lote
-  const messageIdByCampaign: Record<string, string> = {};
-  for (const c of withMetrics) {
-    const msgId = c.relationships?.["campaign-messages"]?.data?.[0]?.id;
-    if (msgId) messageIdByCampaign[c.id] = msgId;
+  // Busca subject/preview por campanha em paralelo (com limite de concorrência)
+  const BATCH = 5;
+  const contents: Record<string, { subject: string; previewText: string }> = {};
+  for (let i = 0; i < withMetrics.length; i += BATCH) {
+    const batch = withMetrics.slice(i, i + BATCH);
+    const results = await Promise.all(
+      batch.map((c: { id: string }) => getCampaignContent(c.id))
+    );
+    batch.forEach((c: { id: string }, idx: number) => {
+      contents[c.id] = results[idx];
+    });
   }
 
-  const messageContents = await getCampaignMessageContents(
-    Object.values(messageIdByCampaign)
-  );
-
-  const result: Campaign[] = withMetrics.map(
+  return withMetrics.map(
     (c: {
       id: string;
-      attributes: {
-        name: string;
-        status: string;
-        send_time: string;
-      };
+      attributes: { name: string; status: string; send_time: string };
     }) => {
-      const msgId = messageIdByCampaign[c.id] ?? "";
-      const content = messageContents[msgId] ?? {
-        subject: "",
-        previewText: "",
-      };
       const m = metrics[c.id];
+      const content = contents[c.id] ?? { subject: "", previewText: "" };
       return {
         id: c.id,
         name: c.attributes.name,
@@ -148,9 +144,4 @@ export async function getCampaigns(limit = 30): Promise<Campaign[]> {
       };
     }
   );
-
-  // Ordena por open rate decrescente e retorna top N
-  return result
-    .sort((a, b) => b.openRate - a.openRate)
-    .slice(0, limit);
 }
