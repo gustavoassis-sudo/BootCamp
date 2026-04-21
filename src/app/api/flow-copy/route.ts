@@ -80,7 +80,13 @@ Responda APENAS com JSON válido, sem markdown:
     const content = message.content[0];
     if (content.type !== "text") throw new Error("Resposta inesperada");
 
-    const parsed = JSON.parse(content.text) as {
+    const cleanJson = content.text
+      .replace(/^```json\s*/i, "")
+      .replace(/^```\s*/i, "")
+      .replace(/\s*```\s*$/, "")
+      .trim();
+
+    const parsed = JSON.parse(cleanJson) as {
       emails: Array<{
         position: number;
         subject: string;

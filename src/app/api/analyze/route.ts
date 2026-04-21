@@ -91,7 +91,12 @@ Responda APENAS com JSON válido, sem markdown, sem texto adicional:
       throw new Error("Resposta inesperada do Claude");
     }
 
-    const analysis: AnalysisResult = JSON.parse(content.text);
+    const cleanJson = content.text
+      .replace(/^```json\s*/i, "")
+      .replace(/^```\s*/i, "")
+      .replace(/\s*```\s*$/, "")
+      .trim();
+    const analysis: AnalysisResult = JSON.parse(cleanJson);
     return NextResponse.json(analysis);
   } catch (e) {
     const msg = e instanceof Error ? e.message : "Erro desconhecido";

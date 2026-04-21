@@ -94,7 +94,13 @@ Se não houver anomalia ou risco real nos dados, retorne null para esses campos.
   const content = message.content[0];
   if (content.type !== "text") throw new Error("Resposta inesperada");
 
-  return JSON.parse(content.text) as ExecutiveBriefing;
+  const cleanJson = content.text
+    .replace(/^```json\s*/i, "")
+    .replace(/^```\s*/i, "")
+    .replace(/\s*```\s*$/, "")
+    .trim();
+
+  return JSON.parse(cleanJson) as ExecutiveBriefing;
 }
 
 export const generateBriefing = unstable_cache(

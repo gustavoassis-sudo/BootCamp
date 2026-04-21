@@ -86,7 +86,12 @@ Seja direto, específico e adaptado ao público masculino da Minimal Club (25-40
     const content = message.content[0];
     if (content.type !== "text") throw new Error("Resposta inesperada");
 
-    const generated: Omit<GeneratedCopy, "brief"> = JSON.parse(content.text);
+    const cleanJson = content.text
+      .replace(/^```json\s*/i, "")
+      .replace(/^```\s*/i, "")
+      .replace(/\s*```\s*$/, "")
+      .trim();
+    const generated: Omit<GeneratedCopy, "brief"> = JSON.parse(cleanJson);
     return NextResponse.json({ ...generated, brief });
   } catch (e) {
     const msg = e instanceof Error ? e.message : "Erro desconhecido";
