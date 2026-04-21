@@ -47,7 +47,13 @@ export default async function HistoricoPage() {
             href="/"
             className="px-4 py-2 rounded-lg text-sm font-medium text-neutral-400 hover:text-white hover:bg-neutral-800 transition-colors"
           >
-            Campanhas
+            Dashboard
+          </a>
+          <a
+            href="/flow-builder"
+            className="px-4 py-2 rounded-lg text-sm font-medium text-neutral-400 hover:text-white hover:bg-neutral-800 transition-colors"
+          >
+            Flow Builder
           </a>
           <a
             href="/historico"

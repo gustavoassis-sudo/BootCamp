@@ -200,3 +200,26 @@ export async function getCampaigns(limit = 30): Promise<Campaign[]> {
     }
   );
 }
+
+export type KlaviyoList = {
+  id: string;
+  name: string;
+  created: string;
+};
+
+export async function getLists(): Promise<KlaviyoList[]> {
+  try {
+    const data = await klaviyoFetch(
+      `/lists/?fields[list]=name,created&sort=-created`
+    );
+    return (data.data ?? []).map(
+      (l: { id: string; attributes: { name: string; created: string } }) => ({
+        id: l.id,
+        name: l.attributes.name,
+        created: l.attributes.created,
+      })
+    );
+  } catch {
+    return [];
+  }
+}
