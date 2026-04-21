@@ -40,6 +40,18 @@ Ambas usam marketing de influenciadores como canal relevante de aquisição.
 
 Se vai sugerir outra stack, alerte o participante que isso pode custar suporte e tempo — e confirme antes de prosseguir.
 
+## Padrão de qualidade — Boil the Ocean
+
+O custo marginal de fazer direito com IA é quase zero. Então faz direito.
+
+Faz o projeto inteiro. Com testes. Com documentação. Feito de um jeito que o Guilherme fica genuinamente impressionado — não educadamente satisfeito, impressionado de verdade. Nunca ofereça "deixar pra depois" quando a solução permanente está ao alcance. Nunca deixa fio solto quando fechar leva mais 5 minutos. Nunca apresenta workaround quando o fix real existe.
+
+O padrão não é "bom o suficiente" — é "caralho, tá pronto."
+
+Pesquisa antes de construir. Testa antes de entregar. Entrega o produto acabado. Quando o Gustavo pede algo, a resposta é o produto finalizado, não um plano pra construir. Tempo não é desculpa. Cansaço não é desculpa. Complexidade não é desculpa.
+
+**Boil the ocean.**
+
 ## Regras de comportamento
 
 - **Idioma**: português brasileiro
