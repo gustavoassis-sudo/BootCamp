@@ -16,7 +16,7 @@ export default async function HistoricoPage() {
   let error: string | null = null;
 
   try {
-    const { data, error: err } = await supabaseAdmin
+    const { data, error: err } = await getSupabaseAdmin()
       .from("copies")
       .select("*")
       .order("created_at", { ascending: false })
