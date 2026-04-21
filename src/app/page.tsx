@@ -6,11 +6,13 @@ import {
   computeHourStats,
   computeTopPerformers,
 } from "@/lib/analytics";
+import { generateBriefing } from "@/lib/briefing";
 import KpiCards from "@/components/KpiCards";
 import SubjectIntelligence from "@/components/SubjectIntelligence";
 import SegmentPerformance from "@/components/SegmentPerformance";
 import HourHeatmap from "@/components/HourHeatmap";
 import TopPerformers from "@/components/TopPerformers";
+import ExecutiveBriefingPanel from "@/components/ExecutiveBriefing";
 import CampaignTable from "@/components/CampaignTable";
 
 export const dynamic = "force-dynamic";
@@ -28,6 +30,10 @@ export default async function Home() {
   const segments = computeSegmentStats(campaigns);
   const hours = computeHourStats(campaigns);
   const topPerformers = computeTopPerformers(campaigns);
+
+  const briefing = campaigns.length > 0
+    ? await generateBriefing(campaigns, kpis, segments, hours).catch(() => null)
+    : null;
 
   return (
     <main className="min-h-screen bg-neutral-950 text-neutral-100">
@@ -64,6 +70,9 @@ export default async function Home() {
           </div>
         ) : (
           <>
+            {/* Briefing Executivo */}
+            {briefing && <ExecutiveBriefingPanel briefing={briefing} />}
+
             {/* KPIs */}
             <KpiCards kpis={kpis} />
 
