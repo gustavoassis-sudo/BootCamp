@@ -1,7 +1,7 @@
 import { getCampaigns, type Campaign } from "@/lib/klaviyo";
 import CampaignTable from "@/components/CampaignTable";
 
-export const revalidate = 300; // revalida a cada 5 min
+export const dynamic = "force-dynamic";
 
 export default async function Home() {
   let campaigns: Campaign[] = [];

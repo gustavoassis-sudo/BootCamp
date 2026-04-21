@@ -32,7 +32,7 @@ async function klaviyoFetch(path: string, options?: RequestInit) {
       "content-type": "application/json",
       ...(options?.headers ?? {}),
     },
-    next: { revalidate: 300 }, // cache 5min no Next.js
+    cache: "no-store",
   });
 
   if (res.status === 429) {
@@ -51,7 +51,6 @@ async function klaviyoFetch(path: string, options?: RequestInit) {
 async function getCampaignMetrics(): Promise<MetricsMap> {
   const data = await klaviyoFetch("/campaign-values-reports/", {
     method: "POST",
-    next: { revalidate: 300 },
     body: JSON.stringify({
       data: {
         type: "campaign-values-report",
