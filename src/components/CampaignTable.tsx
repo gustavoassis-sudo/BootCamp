@@ -22,10 +22,10 @@ function getOutlierBadges(c: Campaign, campaigns: Campaign[]): { label: string; 
   const avgCtor = campaigns.reduce((s, x) => s + x.clickToOpenRate, 0) / campaigns.length;
   const maxConvValue = Math.max(...campaigns.map((x) => x.conversionValue));
 
-  if (c.clickToOpenRate > avgCtor * 1.5) badges.push({ label: "🔥 CTOR alto", color: "text-orange-400 bg-orange-950/40 border-orange-800/50" });
-  if (c.unsubscribeRate > 0.005) badges.push({ label: "⚠️ Unsub alto", color: "text-yellow-400 bg-yellow-950/40 border-yellow-800/50" });
-  if (c.openRate > 0.5 && c.conversionRate === 0) badges.push({ label: "💀 Zero conv", color: "text-red-400 bg-red-950/40 border-red-800/50" });
-  if (c.conversionValue > 0 && c.conversionValue === maxConvValue) badges.push({ label: "⭐ Top ROI", color: "text-emerald-400 bg-emerald-950/40 border-emerald-800/50" });
+  if (c.clickToOpenRate > avgCtor * 1.5) badges.push({ label: "CTOR alto", color: "text-orange-400 bg-orange-950/40 border-orange-800/50" });
+  if (c.unsubscribeRate > 0.005) badges.push({ label: "Unsub alto", color: "text-yellow-400 bg-yellow-950/40 border-yellow-800/50" });
+  if (c.openRate > 0.5 && c.conversionRate === 0) badges.push({ label: "Sem conv", color: "text-red-400 bg-red-950/40 border-red-800/50" });
+  if (c.conversionValue > 0 && c.conversionValue === maxConvValue) badges.push({ label: "Top ROI", color: "text-emerald-400 bg-emerald-950/40 border-emerald-800/50" });
   return badges;
 }
 
@@ -131,11 +131,11 @@ export default function CampaignTable({ campaigns }: { campaigns: Campaign[] }) 
               <th className="px-4 py-3 text-left font-medium text-neutral-400">Campanha</th>
               <th className="px-4 py-3 text-left font-medium text-neutral-400 hidden md:table-cell">Subject</th>
               <th className="px-4 py-3 text-center font-medium text-neutral-400">Open</th>
-              <th className="px-4 py-3 text-center font-medium text-neutral-400">CTOR</th>
+              <th className="px-4 py-3 text-center font-medium text-neutral-400 hidden sm:table-cell">CTOR</th>
               <th className="px-4 py-3 text-center font-medium text-neutral-400 hidden lg:table-cell">Conv%</th>
-              <th className="px-4 py-3 text-center font-medium text-neutral-400 hidden lg:table-cell">AOV</th>
-              <th className="px-4 py-3 text-center font-medium text-neutral-400 hidden xl:table-cell">Unsub%</th>
+              <th className="px-4 py-3 text-center font-medium text-neutral-400 hidden lg:table-cell">Rev/Rec</th>
               <th className="px-4 py-3 text-center font-medium text-neutral-400 hidden xl:table-cell">Recips</th>
+              <th className="px-4 py-3 text-center font-medium text-neutral-400 hidden xl:table-cell">Unsub%</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-neutral-800/60">
@@ -213,7 +213,7 @@ export default function CampaignTable({ campaigns }: { campaigns: Campaign[] }) 
                   <td className="px-4 py-3">
                     <MetricBadge value={pct(c.openRate)} label="open" />
                   </td>
-                  <td className="px-4 py-3">
+                  <td className="px-4 py-3 hidden sm:table-cell">
                     <MetricBadge value={pct(c.clickToOpenRate)} label="ctor" />
                   </td>
                   <td className="px-4 py-3 hidden lg:table-cell">
@@ -224,20 +224,20 @@ export default function CampaignTable({ campaigns }: { campaigns: Campaign[] }) 
                   </td>
                   <td className="px-4 py-3 hidden lg:table-cell">
                     <MetricBadge
-                      value={c.averageOrderValue > 0 ? `R$${c.averageOrderValue.toFixed(0)}` : "—"}
-                      label="aov"
-                    />
-                  </td>
-                  <td className="px-4 py-3 hidden xl:table-cell">
-                    <MetricBadge
-                      value={c.unsubscribeRate > 0 ? pct(c.unsubscribeRate) : "—"}
-                      label="unsub%"
+                      value={c.revenuePerRecipient > 0 ? `R$${c.revenuePerRecipient.toFixed(2)}` : "—"}
+                      label="rev/rec"
                     />
                   </td>
                   <td className="px-4 py-3 hidden xl:table-cell">
                     <MetricBadge
                       value={c.recipients > 0 ? fmtRecipients(c.recipients) : "—"}
                       label="recips"
+                    />
+                  </td>
+                  <td className="px-4 py-3 hidden xl:table-cell">
+                    <MetricBadge
+                      value={c.unsubscribeRate > 0 ? pct(c.unsubscribeRate) : "—"}
+                      label="unsub%"
                     />
                   </td>
                 </tr>

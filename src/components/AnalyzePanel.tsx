@@ -123,7 +123,7 @@ export default function AnalyzePanel({
               {analysis.performanceInsights?.length > 0 && (
                 <div className="rounded-xl border border-blue-800/50 bg-blue-950/10 p-4">
                   <p className="text-xs font-semibold text-blue-300 uppercase tracking-wide mb-3">
-                    📊 Dados Quantitativos
+                    Dados Quantitativos
                   </p>
                   <ul className="space-y-2">
                     {analysis.performanceInsights.map((item, i) => (
@@ -140,7 +140,7 @@ export default function AnalyzePanel({
               {analysis.hiddenPatterns?.length > 0 && (
                 <div className="rounded-xl border border-amber-800/50 bg-amber-950/10 p-4">
                   <p className="text-xs font-semibold text-amber-300 uppercase tracking-wide mb-3">
-                    💡 Padrões Ocultos
+                    Padrões Ocultos
                   </p>
                   <ul className="space-y-2">
                     {analysis.hiddenPatterns.map((item, i) => (
@@ -157,7 +157,7 @@ export default function AnalyzePanel({
               {analysis.audienceInsights?.length > 0 && (
                 <div className="rounded-xl border border-emerald-800/50 bg-emerald-950/10 p-4">
                   <p className="text-xs font-semibold text-emerald-300 uppercase tracking-wide mb-3">
-                    👥 Insights por Segmento
+                    Insights por Segmento
                   </p>
                   <ul className="space-y-2">
                     {analysis.audienceInsights.map((item, i) => (

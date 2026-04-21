@@ -6,7 +6,7 @@ function extractSegment(name: string): string {
   return match[1].replace(/[\[\]]/g, "").trim();
 }
 const REVISION = "2026-04-15";
-const CONVERSION_METRIC_ID = "RTf8bb"; // Order Placed — Minimal Club
+const CONVERSION_METRIC_ID = "XbxAt4"; // Placed Order — Minimal Club
 
 export type Campaign = {
   id: string;
