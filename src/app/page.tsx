@@ -1,18 +1,12 @@
 import { getCampaigns } from "@/lib/klaviyo";
 import {
   computeKpis,
-  computeSubjectIntelligence,
   computeSegmentStats,
   computeHourStats,
-  computeTopPerformers,
 } from "@/lib/analytics";
 import { generateBriefing } from "@/lib/briefing";
-import KpiCards from "@/components/KpiCards";
-import SubjectIntelligence from "@/components/SubjectIntelligence";
-import SegmentPerformance from "@/components/SegmentPerformance";
-import HourHeatmap from "@/components/HourHeatmap";
-import TopPerformers from "@/components/TopPerformers";
 import ExecutiveBriefingPanel from "@/components/ExecutiveBriefing";
+import PerCampaignDashboard from "@/components/PerCampaignDashboard";
 import CampaignTable from "@/components/CampaignTable";
 
 export const dynamic = "force-dynamic";
@@ -20,16 +14,14 @@ export const dynamic = "force-dynamic";
 export default async function Home() {
   let error: string | null = null;
 
-  let campaigns = await getCampaigns(30).catch((e) => {
+  const campaigns = await getCampaigns(30).catch((e) => {
     error = e instanceof Error ? e.message : "Erro ao carregar campanhas";
     return [];
   });
 
   const kpis = computeKpis(campaigns);
-  const subjectIntel = computeSubjectIntelligence(campaigns);
   const segments = computeSegmentStats(campaigns);
   const hours = computeHourStats(campaigns);
-  const topPerformers = computeTopPerformers(campaigns);
 
   const briefing = campaigns.length > 0
     ? await generateBriefing(campaigns, kpis, segments, hours).catch(() => null)
@@ -49,7 +41,7 @@ export default async function Home() {
           </div>
           <h1 className="text-3xl font-bold tracking-tight">Email Copy Intelligence</h1>
           <p className="mt-2 text-neutral-400">
-            Analisa os top performers e gera novos copies baseados nos padrões que funcionaram.
+            Analise campanha por campanha, compare com a base e veja o que cada uma ensina.
           </p>
         </div>
 
@@ -73,30 +65,13 @@ export default async function Home() {
           </div>
         ) : (
           <>
-            {/* Briefing Executivo */}
+            {/* Briefing Executivo Geral */}
             {briefing && <ExecutiveBriefingPanel briefing={briefing} />}
 
-            {/* KPIs */}
-            <KpiCards kpis={kpis} />
+            {/* Dashboard individual por campanha */}
+            <PerCampaignDashboard campaigns={campaigns} />
 
-            {/* Subject Intelligence */}
-            <SubjectIntelligence data={subjectIntel} />
-
-            {/* Top Performers */}
-            <TopPerformers
-              byOpen={topPerformers.byOpen}
-              byCtor={topPerformers.byCtor}
-              byConv={topPerformers.byConv}
-              byRevenue={topPerformers.byRevenue}
-            />
-
-            {/* Segment + Hour (lado a lado em telas grandes) */}
-            <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-              <SegmentPerformance segments={segments} />
-              <HourHeatmap hours={hours} />
-            </div>
-
-            {/* Divisor */}
+            {/* Tabela de campanhas */}
             <div className="border-t border-neutral-800 pt-6">
               <p className="text-xs text-neutral-500 uppercase tracking-widest mb-6">
                 Campanhas — selecione para analisar com Claude
